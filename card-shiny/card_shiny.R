@@ -52,6 +52,7 @@ ui <- tagList(
 
 
 server <- function(input, output, session) {
+  # 设置上传文件的大小
   options(shiny.maxRequestSize=60*1024^2)
   
   values <- reactiveValues(
