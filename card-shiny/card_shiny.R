@@ -42,6 +42,7 @@ ui <- tagList(
         h4("Deconvolution ratio"),
         br(),
         br(),
+        # loading 加载
         shinycssloaders::withSpinner(
           plotOutput("card")
           )
