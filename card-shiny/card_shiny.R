@@ -42,7 +42,6 @@ ui <- tagList(
         h4("Deconvolution ratio"),
         br(),
         br(),
-        # loading 加载
         shinycssloaders::withSpinner(
           plotOutput("card")
           )
@@ -53,7 +52,6 @@ ui <- tagList(
 
 
 server <- function(input, output, session) {
-  # 设置上传文件的大小
   options(shiny.maxRequestSize=60*1024^2)
   
   values <- reactiveValues(
@@ -134,29 +132,39 @@ server <- function(input, output, session) {
     sc_count = dataInput3()
     sc_meta = dataInput4()
     
-    # 设置全局变量方便下载文件
-    CARD_obj <<- createCARDObject(
-      sc_count = sc_count,
-      sc_meta = sc_meta,
-      spatial_count = spatial_count,
-      spatial_location = spatial_location,
-      ct.varname = "cellType",
-      ct.select = unique(sc_meta$cellType),
-      sample.varname = "sampleInfo",
-      minCountGene = input$minCountGene,
-      minCountSpot = input$minCountSpot) 
     
-    # 设置全局变量方便下载文件
-    CARD_obj <<- CARD_deconvolution(CARD_object = CARD_obj)
+    if(is.null(spatial_count) | is.null(spatial_location) | is.null(sc_count) | is.null(sc_meta)){
+      warning("Please upload files!")
+    } 
+    else{
+      # 设置全局变量方便下载文件
+      CARD_obj <<- createCARDObject(
+        sc_count = sc_count,
+        sc_meta = sc_meta,
+        spatial_count = spatial_count,
+        spatial_location = spatial_location,
+        ct.varname = "cellType",
+        ct.select = unique(sc_meta$cellType),
+        sample.varname = "sampleInfo",
+        minCountGene = input$minCountGene,
+        minCountSpot = input$minCountSpot) 
+      
+      # 设置全局变量方便下载文件
+      CARD_obj <<- CARD_deconvolution(CARD_object = CARD_obj)
+    }
   })
   
   output$card <- renderPlot({
     datasetInput()
-    
-    p1 <- CARD.visualize.pie(
-      proportion = CARD_obj@Proportion_CARD,
-      spatial_location = CARD_obj@spatial_location)
-    print(p1)
+    if(!exists("CARD_obj")){
+      warning("Please upload files!")
+    } 
+    else{
+      p1 <- CARD.visualize.pie(
+        proportion = CARD_obj@Proportion_CARD,
+        spatial_location = CARD_obj@spatial_location)
+      print(p1)
+    }
   })
   
   output$downloadData <- downloadHandler(
