@@ -16,10 +16,10 @@ ui <- tagList(
         
         actionButton('reset', 'RESET'),
         hr(),
-        sliderInput("minCountGene", "Step 5: The number of treatment associated dimensions",
+        sliderInput("minCountGene", "Step 5: Minimum gene count",
                     min = 0, max = 10000,
                     value = 100),
-        sliderInput("minCountSpot", "Step 6: The number of batch associated dimensions",
+        sliderInput("minCountSpot", "Step 6: Minimum spatial count",
                     min = 0, max = 100,
                     value = 5),
         hr(),
